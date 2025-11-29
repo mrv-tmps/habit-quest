@@ -1,12 +1,91 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useHabitTracker } from '@/hooks/useHabitTracker';
+import { CharacterCard } from '@/components/CharacterCard';
+import { StatCard } from '@/components/StatCard';
+import { GitHubSetup } from '@/components/GitHubSetup';
+import { MessageToast } from '@/components/MessageToast';
+import { ResetButton } from '@/components/ResetButton';
 
 const Index = () => {
+  const {
+    data,
+    message,
+    isLevelingUp,
+    canComplete,
+    completeStat,
+    resetProgress,
+    githubConfig,
+    saveGitHubConfig,
+    clearGitHubConfig,
+    xpProgress,
+    xpToNextLevel,
+  } = useHabitTracker();
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
+    <div className="min-h-screen bg-background">
+      {/* Background gradient */}
+      <div className="fixed inset-0 bg-gradient-to-br from-background via-background to-levelBadge/10 pointer-events-none" />
+
+      <div className="relative max-w-md mx-auto px-4 py-8 space-y-6">
+        {/* Header */}
+        <header className="text-center space-y-2">
+          <h1 className="font-pixel text-lg text-primary text-glow">
+            HABIT QUEST
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            Level up your life, one habit at a time
+          </p>
+        </header>
+
+        {/* Character Card */}
+        <CharacterCard
+          avatar={data.avatar}
+          level={data.level}
+          xpProgress={xpProgress}
+          xpToNextLevel={xpToNextLevel}
+          totalPoints={data.totalPoints}
+          isLevelingUp={isLevelingUp}
+        />
+
+        {/* Stats Grid */}
+        <div className="space-y-3">
+          <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+            Daily Quests
+          </h3>
+          <div className="grid gap-3">
+            <StatCard
+              type="strength"
+              value={data.stats.strength}
+              canComplete={canComplete('strength')}
+              onComplete={() => completeStat('strength')}
+            />
+            <StatCard
+              type="intelligence"
+              value={data.stats.intelligence}
+              canComplete={canComplete('intelligence')}
+              onComplete={() => completeStat('intelligence')}
+            />
+            <StatCard
+              type="endurance"
+              value={data.stats.endurance}
+              canComplete={canComplete('endurance')}
+              onComplete={() => completeStat('endurance')}
+            />
+          </div>
+        </div>
+
+        {/* Footer Actions */}
+        <div className="flex items-center justify-between pt-4 border-t border-border">
+          <ResetButton onReset={resetProgress} />
+          <GitHubSetup
+            isConnected={!!githubConfig}
+            onSave={saveGitHubConfig}
+            onDisconnect={clearGitHubConfig}
+          />
+        </div>
       </div>
+
+      {/* Message Toast */}
+      <MessageToast message={message} />
     </div>
   );
 };
