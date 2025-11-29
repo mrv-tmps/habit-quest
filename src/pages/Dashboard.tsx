@@ -7,7 +7,6 @@ import { DynamicStatCard } from '@/components/DynamicStatCard';
 import { GuestBanner } from '@/components/GuestBanner';
 import { MessageToast } from '@/components/MessageToast';
 import { Button } from '@/components/ui/button';
-import { toast } from 'sonner';
 import logo from '@/assets/habit-quest-logo.png';
 
 const Dashboard = () => {
@@ -36,7 +35,7 @@ const Dashboard = () => {
 
   const handleComplete = async (statId: string) => {
     const result = await completeStat(statId);
-    
+
     if (!result.success) {
       setMessage(`⏰ ${result.message}`);
       setTimeout(() => setMessage(null), 3000);
@@ -80,11 +79,11 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="fixed inset-0 bg-gradient-to-br from-background via-background to-levelBadge/10 pointer-events-none" />
+      <div className="fixed inset-0 bg-gradient-to-br from-background via-background to-levelBadge/10 pointer-events-none -z-10" />
 
-      <div className="relative max-w-md mx-auto px-4 py-8 space-y-6">
+      <div className="relative mx-auto w-full max-w-6xl px-4 py-8 lg:py-12 space-y-8">
         {/* Header */}
-        <header className="flex items-center justify-between">
+        <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-2">
             <img
               src={logo}
@@ -95,51 +94,82 @@ const Dashboard = () => {
               HABIT QUEST
             </h1>
           </div>
-          <div className="flex gap-2">
-            <Button variant="ghost" size="sm" onClick={() => navigate('/history')}>
-              📊
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="gap-2"
+              onClick={() => navigate('/history')}
+            >
+              <span aria-hidden="true">📊</span>
+              <span className="text-xs font-medium uppercase tracking-wide">History</span>
             </Button>
-            <Button variant="ghost" size="sm" onClick={() => navigate('/settings')}>
-              ⚙️
+            <Button
+              variant="ghost"
+              size="sm"
+              className="gap-2"
+              onClick={() => navigate('/settings')}
+            >
+              <span aria-hidden="true">⚙️</span>
+              <span className="text-xs font-medium uppercase tracking-wide">Settings</span>
             </Button>
+            {!isGuest && (
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={handleLogout}
+                className="hidden sm:inline-flex"
+              >
+                Logout
+              </Button>
+            )}
           </div>
         </header>
 
-        {/* Guest Banner */}
-        {isGuest && <GuestBanner />}
+        <main className="grid gap-6 lg:grid-cols-[360px,minmax(0,1fr)] lg:items-start lg:gap-8 lg:min-h-[calc(100vh-12rem)]">
+          <section className="flex flex-col gap-6 lg:sticky lg:top-12">
+            {/* Guest Banner */}
+            {isGuest && <GuestBanner />}
 
-        {/* Character Card */}
-        <CharacterCard
-          avatar={profile.avatar}
-          name={profile.character_name}
-          level={level}
-          xpProgress={xpProgress}
-          xpToNextLevel={xpToNextLevel}
-          totalPoints={profile.total_xp}
-          isLevelingUp={isLevelingUp}
-        />
+            {/* Character Card */}
+            <CharacterCard
+              avatar={profile.avatar}
+              name={profile.character_name}
+              level={level}
+              xpProgress={xpProgress}
+              xpToNextLevel={xpToNextLevel}
+              totalPoints={profile.total_xp}
+              isLevelingUp={isLevelingUp}
+            />
+          </section>
 
-        {/* Stats Grid */}
-        <div className="space-y-3">
-          <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
-            Daily Quests
-          </h3>
-          <div className="grid gap-3">
-            {stats.map((stat) => (
-              <DynamicStatCard
-                key={stat.id}
-                stat={stat}
-                canComplete={canComplete(stat.id)}
-                onComplete={() => handleComplete(stat.id)}
-              />
-            ))}
-          </div>
-        </div>
+          {/* Stats Grid */}
+          <section className="flex flex-col gap-4 lg:self-stretch">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+              <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+                Daily Quests
+              </h3>
+              <span className="text-xs text-muted-foreground">
+                {stats.length} quest{stats.length !== 1 ? 's' : ''} tracked
+              </span>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              {stats.map((stat) => (
+                <DynamicStatCard
+                  key={stat.id}
+                  stat={stat}
+                  canComplete={canComplete(stat.id)}
+                  onComplete={() => handleComplete(stat.id)}
+                />
+              ))}
+            </div>
+          </section>
+        </main>
 
         {/* Footer */}
-        <div className="pt-4 border-t border-border text-center">
+        <div className="pt-4 border-t border-border flex justify-center lg:justify-end">
           {!isGuest && (
-            <Button variant="ghost" size="sm" onClick={handleLogout}>
+            <Button variant="ghost" size="sm" onClick={handleLogout} className="sm:hidden">
               Logout
             </Button>
           )}

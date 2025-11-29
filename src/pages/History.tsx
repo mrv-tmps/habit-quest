@@ -86,9 +86,9 @@ const History = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="fixed inset-0 bg-gradient-to-br from-background via-background to-levelBadge/10 pointer-events-none" />
+      <div className="fixed inset-0 bg-gradient-to-br from-background via-background to-levelBadge/10 pointer-events-none -z-10" />
 
-      <div className="relative max-w-md mx-auto px-4 py-8 space-y-6">
+      <div className="relative mx-auto w-full max-w-6xl px-4 py-8 space-y-8">
         {/* Header */}
         <header className="flex items-center gap-4">
           <Button variant="ghost" size="sm" onClick={() => navigate('/')}>
@@ -97,75 +97,99 @@ const History = () => {
           <h1 className="font-pixel text-lg text-primary text-glow">HISTORY</h1>
         </header>
 
-        {/* Streak Card */}
-        <div className="rounded-xl bg-card border border-border p-6 card-glow text-center">
-          <div className="text-5xl mb-2">🔥</div>
-          <div className="font-pixel text-3xl text-primary">{currentStreak}</div>
-          <p className="text-sm text-muted-foreground">Day Streak</p>
-        </div>
-
-        {/* Contribution Calendar */}
-        <div className="rounded-xl bg-card border border-border p-4">
-          <h3 className="text-sm font-medium text-muted-foreground mb-3">Last 12 Weeks</h3>
-          <div className="flex gap-1 overflow-x-auto pb-2">
-            {calendarData.map((week, wi) => (
-              <div key={wi} className="flex flex-col gap-1">
-                {week.map((day, di) => (
-                  <div
-                    key={di}
-                    className={cn(
-                      "w-3 h-3 rounded-sm transition-colors",
-                      getHeatColor(day.count)
-                    )}
-                    title={`${day.date}: ${day.count} habits`}
-                  />
-                ))}
-              </div>
-            ))}
-          </div>
-          <div className="flex items-center justify-end gap-2 mt-2 text-xs text-muted-foreground">
-            <span>Less</span>
-            <div className="flex gap-1">
-              {[0, 1, 2, 3, 4].map(i => (
-                <div key={i} className={cn("w-3 h-3 rounded-sm", getHeatColor(i))} />
-              ))}
+        <div className="grid gap-6 lg:grid-cols-[320px,minmax(0,1fr)] lg:items-start">
+          <section className="space-y-4">
+            {/* Streak Card */}
+            <div className="rounded-xl bg-card border border-border p-6 card-glow text-center">
+              <div className="text-5xl mb-2">🔥</div>
+              <div className="font-pixel text-3xl text-primary">{currentStreak}</div>
+              <p className="text-sm text-muted-foreground">Day Streak</p>
             </div>
-            <span>More</span>
-          </div>
-        </div>
 
-        {/* Timeline */}
-        <div className="space-y-3">
-          <h3 className="text-sm font-medium text-muted-foreground">Recent Activity</h3>
-          {timelineData.length === 0 ? (
-            <p className="text-center text-muted-foreground py-8">No activity yet. Complete your first habit!</p>
-          ) : (
-            <div className="space-y-2">
-              {timelineData.map(({ date, stats: completedStats }) => (
-                <div key={date} className="rounded-lg bg-card border border-border p-3">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium">
-                      {new Date(date).toLocaleDateString('en-US', { 
-                        weekday: 'short', 
-                        month: 'short', 
-                        day: 'numeric' 
-                      })}
-                    </span>
-                    <span className="text-xs text-muted-foreground">
-                      {completedStats.length}/{stats.length} habits
-                    </span>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {completedStats.map((stat, i) => (
-                      <span key={i} className="text-lg" title={stat?.stat_name}>
-                        {stat?.emoji}
-                      </span>
+            {/* Quick summary */}
+            <div className="rounded-xl bg-card border border-border/80 p-4 space-y-2">
+              <p className="text-sm text-muted-foreground">
+                Keep your streak alive by completing at least one quest per day. Your best run fuels Habit Quest's leaderboards (coming soon!).
+              </p>
+              <Button variant="outline" size="sm" onClick={() => navigate('/')}>
+                Back to Dashboard →
+              </Button>
+            </div>
+          </section>
+
+          <section className="space-y-6">
+            {/* Contribution Calendar */}
+            <div className="rounded-xl bg-card border border-border p-4">
+              <div className="flex items-center justify-between gap-2 mb-3">
+                <h3 className="text-sm font-medium text-muted-foreground">Last 12 Weeks</h3>
+                <span className="text-xs text-muted-foreground">Scroll to inspect</span>
+              </div>
+              <div className="flex gap-1 overflow-x-auto pb-2">
+                {calendarData.map((week, wi) => (
+                  <div key={wi} className="flex flex-col gap-1">
+                    {week.map((day, di) => (
+                      <div
+                        key={di}
+                        className={cn(
+                          "w-3 h-3 rounded-sm transition-colors",
+                          getHeatColor(day.count)
+                        )}
+                        title={`${day.date}: ${day.count} habits`}
+                      />
                     ))}
                   </div>
+                ))}
+              </div>
+              <div className="flex items-center justify-end gap-2 mt-2 text-xs text-muted-foreground">
+                <span>Less</span>
+                <div className="flex gap-1">
+                  {[0, 1, 2, 3, 4].map(i => (
+                    <div key={i} className={cn("w-3 h-3 rounded-sm", getHeatColor(i))} />
+                  ))}
                 </div>
-              ))}
+                <span>More</span>
+              </div>
             </div>
-          )}
+
+            {/* Timeline */}
+            <div className="rounded-xl bg-card border border-border p-5 space-y-4">
+              <div className="flex items-center justify-between gap-2">
+                <h3 className="text-sm font-medium text-muted-foreground">Recent Activity</h3>
+                <span className="text-xs text-muted-foreground">
+                  Showing last {timelineData.length} days
+                </span>
+              </div>
+              {timelineData.length === 0 ? (
+                <p className="text-center text-muted-foreground py-8">No activity yet. Complete your first habit!</p>
+              ) : (
+                <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-1">
+                  {timelineData.map(({ date, stats: completedStats }) => (
+                    <div key={date} className="rounded-lg bg-background/40 border border-border/60 p-3">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm font-medium">
+                          {new Date(date).toLocaleDateString('en-US', { 
+                            weekday: 'short', 
+                            month: 'short', 
+                            day: 'numeric' 
+                          })}
+                        </span>
+                        <span className="text-xs text-muted-foreground">
+                          {completedStats.length}/{stats.length} habits
+                        </span>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {completedStats.map((stat, i) => (
+                          <span key={i} className="text-lg" title={stat?.stat_name}>
+                            {stat?.emoji}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </section>
         </div>
       </div>
     </div>

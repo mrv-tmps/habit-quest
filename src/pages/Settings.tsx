@@ -147,9 +147,9 @@ const Settings = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="fixed inset-0 bg-gradient-to-br from-background via-background to-levelBadge/10 pointer-events-none" />
+      <div className="fixed inset-0 bg-gradient-to-br from-background via-background to-levelBadge/10 pointer-events-none -z-10" />
 
-      <div className="relative max-w-md mx-auto px-4 py-8 space-y-6">
+      <div className="relative mx-auto w-full max-w-6xl px-4 py-8 space-y-8">
         {/* Header */}
         <header className="flex items-center gap-4">
           <Button variant="ghost" size="sm" onClick={() => navigate('/')}>
@@ -158,143 +158,149 @@ const Settings = () => {
           <h1 className="font-pixel text-lg text-primary text-glow">SETTINGS</h1>
         </header>
 
-        {/* Character Settings */}
-        <div className="rounded-xl bg-card border border-border p-6 space-y-4">
-          <h2 className="font-semibold">Character</h2>
+        <div className="grid gap-6 lg:grid-cols-[360px,minmax(0,1fr)] lg:items-start">
+          <section className="space-y-6">
+            {/* Character Settings */}
+            <div className="rounded-xl bg-card border border-border p-6 space-y-4">
+              <h2 className="font-semibold">Character</h2>
 
-          <div className="text-center">
-            <div className="text-7xl mb-4">{avatar}</div>
-            <div className="flex flex-wrap justify-center gap-2">
-              {AVATAR_OPTIONS.map((emoji) => (
-                <button
-                  key={emoji}
-                  onClick={() => setAvatar(emoji)}
-                  className={cn(
-                    "text-2xl p-2 rounded-lg transition-all",
-                    avatar === emoji ? "bg-primary/20 ring-2 ring-primary" : "hover:bg-muted"
-                  )}
-                >
-                  {emoji}
-                </button>
-              ))}
-            </div>
-          </div>
+              <div className="text-center">
+                <div className="text-7xl mb-4">{avatar}</div>
+                <div className="flex flex-wrap justify-center gap-2">
+                  {AVATAR_OPTIONS.map((emoji) => (
+                    <button
+                      key={emoji}
+                      onClick={() => setAvatar(emoji)}
+                      className={cn(
+                        "text-2xl p-2 rounded-lg transition-all",
+                        avatar === emoji ? "bg-primary/20 ring-2 ring-primary" : "hover:bg-muted"
+                      )}
+                    >
+                      {emoji}
+                    </button>
+                  ))}
+                </div>
+              </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="name">Character Name</Label>
-            <Input
-              id="name"
-              value={characterName}
-              onChange={(e) => setCharacterName(e.target.value)}
-              maxLength={20}
-              className="bg-background/50"
-            />
-          </div>
+              <div className="space-y-2">
+                <Label htmlFor="name">Character Name</Label>
+                <Input
+                  id="name"
+                  value={characterName}
+                  onChange={(e) => setCharacterName(e.target.value)}
+                  maxLength={20}
+                  className="bg-background/50"
+                />
+              </div>
 
-          <Button onClick={handleSave} disabled={saving} className="w-full">
-            {saving ? 'Saving...' : 'Save Changes'}
-          </Button>
-        </div>
-
-        {/* Feedback */}
-        <div className="rounded-xl bg-card border border-border/80 p-6 space-y-4">
-          <div>
-            <h2 className="font-semibold">Feedback & Ideas</h2>
-            <p className="text-sm text-muted-foreground">
-              Request features, report issues, or tell us what would make Habit Hero better.
-            </p>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="feedback-category">Category</Label>
-            <Select value={feedbackCategory} onValueChange={setFeedbackCategory}>
-              <SelectTrigger id="feedback-category" className="bg-background/50">
-                <SelectValue placeholder="Select a category" />
-              </SelectTrigger>
-              <SelectContent>
-                {FEEDBACK_CATEGORIES.map((category) => (
-                  <SelectItem key={category.value} value={category.value}>
-                    {category.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="feedback-email">Contact Email (optional)</Label>
-            <Input
-              id="feedback-email"
-              type="email"
-              value={feedbackEmail}
-              onChange={(e) => setFeedbackEmail(e.target.value)}
-              placeholder="you@email.com"
-              className="bg-background/50"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="feedback-message">What should we build next?</Label>
-            <Textarea
-              id="feedback-message"
-              value={feedbackMessage}
-              onChange={(e) => setFeedbackMessage(e.target.value)}
-              placeholder="Describe the update, improvement, or issue..."
-              rows={4}
-              className="bg-background/50"
-              maxLength={500}
-            />
-            <p className="text-xs text-muted-foreground">
-              {feedbackMessage.length}/500 characters
-            </p>
-          </div>
-
-          {isGuest && (
-            <p className="text-xs text-muted-foreground">
-              Guest submissions are stored without an account. Leave your email so we can reply.
-            </p>
-          )}
-
-          <Button
-            onClick={handleFeedbackSubmit}
-            disabled={feedbackSubmitting}
-            className="w-full"
-          >
-            {feedbackSubmitting ? 'Sending...' : 'Send Feedback'}
-          </Button>
-        </div>
-
-        {/* Danger Zone */}
-        <div className="rounded-xl bg-card border border-destructive/30 p-6 space-y-4">
-          <h2 className="font-semibold text-destructive">Danger Zone</h2>
-
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button variant="outline" className="w-full border-destructive/50 text-destructive hover:bg-destructive/10">
-                Reset All Progress
+              <Button onClick={handleSave} disabled={saving} className="w-full">
+                {saving ? 'Saving...' : 'Save Changes'}
               </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Reset all progress?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  This will reset your XP, level, and all habit completions. Your stats will remain but points will be cleared. This cannot be undone.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={handleReset} className="bg-destructive hover:bg-destructive/90">
-                  Reset Everything
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
+            </div>
 
-          {!isGuest && (
-            <Button variant="ghost" onClick={handleLogout} className="w-full">
-              Logout
-            </Button>
-          )}
+            {/* Danger Zone */}
+            <div className="rounded-xl bg-card border border-destructive/30 p-6 space-y-4">
+              <h2 className="font-semibold text-destructive">Danger Zone</h2>
+
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="outline" className="w-full border-destructive/50 text-destructive hover:bg-destructive/10">
+                    Reset All Progress
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Reset all progress?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This will reset your XP, level, and all habit completions. Your stats will remain but points will be cleared. This cannot be undone.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleReset} className="bg-destructive hover:bg-destructive/90">
+                      Reset Everything
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+
+              {!isGuest && (
+                <Button variant="ghost" onClick={handleLogout} className="w-full">
+                  Logout
+                </Button>
+              )}
+            </div>
+          </section>
+
+          <section className="space-y-6">
+            {/* Feedback */}
+            <div className="rounded-xl bg-card border border-border/80 p-6 space-y-4">
+              <div>
+                <h2 className="font-semibold">Feedback & Ideas</h2>
+                <p className="text-sm text-muted-foreground">
+                  Request features, report issues, or tell us what would make Habit Hero better.
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="feedback-category">Category</Label>
+                <Select value={feedbackCategory} onValueChange={setFeedbackCategory}>
+                  <SelectTrigger id="feedback-category" className="bg-background/50">
+                    <SelectValue placeholder="Select a category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {FEEDBACK_CATEGORIES.map((category) => (
+                      <SelectItem key={category.value} value={category.value}>
+                        {category.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="feedback-email">Contact Email (optional)</Label>
+                <Input
+                  id="feedback-email"
+                  type="email"
+                  value={feedbackEmail}
+                  onChange={(e) => setFeedbackEmail(e.target.value)}
+                  placeholder="you@email.com"
+                  className="bg-background/50"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="feedback-message">What should we build next?</Label>
+                <Textarea
+                  id="feedback-message"
+                  value={feedbackMessage}
+                  onChange={(e) => setFeedbackMessage(e.target.value)}
+                  placeholder="Describe the update, improvement, or issue..."
+                  rows={4}
+                  className="bg-background/50"
+                  maxLength={500}
+                />
+                <p className="text-xs text-muted-foreground">
+                  {feedbackMessage.length}/500 characters
+                </p>
+              </div>
+
+              {isGuest && (
+                <p className="text-xs text-muted-foreground">
+                  Guest submissions are stored without an account. Leave your email so we can reply.
+                </p>
+              )}
+
+              <Button
+                onClick={handleFeedbackSubmit}
+                disabled={feedbackSubmitting}
+                className="w-full"
+              >
+                {feedbackSubmitting ? 'Sending...' : 'Send Feedback'}
+              </Button>
+            </div>
+          </section>
         </div>
       </div>
     </div>

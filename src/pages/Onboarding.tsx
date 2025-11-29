@@ -137,141 +137,147 @@ const Onboarding = () => {
 
   return (
     <div className="min-h-screen bg-background py-8 px-4">
-      <div className="fixed inset-0 bg-gradient-to-br from-background via-background to-levelBadge/10 pointer-events-none" />
+      <div className="fixed inset-0 bg-gradient-to-br from-background via-background to-levelBadge/10 pointer-events-none -z-10" />
 
-      <div className="relative max-w-lg mx-auto space-y-8">
+      <div className="relative mx-auto w-full max-w-6xl space-y-8">
         {/* Header */}
         <div className="text-center space-y-2">
           <h1 className="font-pixel text-xl text-primary text-glow">CREATE YOUR HERO</h1>
           <p className="text-muted-foreground">Customize your character and stats</p>
         </div>
 
-        {/* Avatar Section */}
-        <div className="rounded-xl bg-card border border-border p-6 card-glow text-center">
-          <div className="text-8xl mb-4">{avatar}</div>
-          <div className="flex flex-wrap justify-center gap-2 mb-4">
-            {['🧑‍🚀', '🦸', '🧙', '🥷', '👨‍💻', '🧝', '🤖', '👾'].map((emoji) => (
-              <button
-                key={emoji}
-                onClick={() => setAvatar(emoji)}
-                className={cn(
-                  "text-3xl p-2 rounded-lg transition-all",
-                  avatar === emoji ? "bg-primary/20 ring-2 ring-primary" : "hover:bg-muted"
-                )}
-              >
-                {emoji}
-              </button>
-            ))}
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="name">Character Name</Label>
-            <Input
-              id="name"
-              value={characterName}
-              onChange={(e) => setCharacterName(e.target.value)}
-              placeholder="Enter your hero name"
-              className="text-center bg-background/50"
-              maxLength={20}
-            />
-          </div>
-        </div>
-
-        {/* Stats Section */}
-        <div className="space-y-4">
-          <div className="flex justify-between items-center">
-            <h2 className="font-pixel text-sm text-primary">YOUR STATS ({stats.length}/6)</h2>
-            <Button onClick={addStat} variant="outline" size="sm" disabled={stats.length >= 6}>
-              + Add Stat
-            </Button>
-          </div>
-
-          {stats.map((stat, index) => (
-            <div key={index} className="rounded-xl bg-card border border-border p-4 space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-2xl">{stat.emoji}</span>
-                {stats.length > 3 && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => removeStat(index)}
-                    className="text-destructive hover:text-destructive"
-                  >
-                    Remove
-                  </Button>
-                )}
-              </div>
-
-              <div className="grid gap-3">
-                <div>
-                  <Label className="text-xs">Stat Name</Label>
-                  <Input
-                    value={stat.name}
-                    onChange={(e) => updateStat(index, 'name', e.target.value)}
-                    placeholder="e.g. Strength, Discipline"
-                    className="bg-background/50"
-                    maxLength={20}
-                  />
-                </div>
-
-                <div>
-                  <Label className="text-xs">Daily Habit</Label>
-                  <Input
-                    value={stat.habitDescription}
-                    onChange={(e) => updateStat(index, 'habitDescription', e.target.value)}
-                    placeholder="e.g. 30 min workout"
-                    className="bg-background/50"
-                    maxLength={50}
-                  />
-                </div>
-
-                <div>
-                  <Label className="text-xs">Emoji</Label>
-                  <div className="flex flex-wrap gap-1 mt-1">
-                    {EMOJI_OPTIONS.map((emoji) => (
-                      <button
-                        key={emoji}
-                        onClick={() => updateStat(index, 'emoji', emoji)}
-                        className={cn(
-                          "text-xl p-1 rounded transition-all",
-                          stat.emoji === emoji ? "bg-primary/20 ring-1 ring-primary" : "hover:bg-muted"
-                        )}
-                      >
-                        {emoji}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <Label className="text-xs">Color</Label>
-                  <div className="flex gap-2 mt-1">
-                    {COLOR_OPTIONS.map((color) => (
-                      <button
-                        key={color.name}
-                        onClick={() => updateStat(index, 'color', color.name)}
-                        className={cn(
-                          "w-8 h-8 rounded-full transition-all",
-                          color.class,
-                          stat.color === color.name ? "ring-2 ring-offset-2 ring-offset-card ring-foreground" : "opacity-60 hover:opacity-100"
-                        )}
-                        title={color.label}
-                      />
-                    ))}
-                  </div>
-                </div>
-              </div>
+        <div className="grid gap-6 lg:grid-cols-[360px,minmax(0,1fr)] lg:items-start">
+          {/* Avatar Section */}
+          <section className="rounded-xl bg-card border border-border p-6 card-glow text-center space-y-6 lg:sticky lg:top-12">
+            <div className="text-8xl">{avatar}</div>
+            <div className="flex flex-wrap justify-center gap-2">
+              {['🧑‍🚀', '🦸', '🧙', '🥷', '👨‍💻', '🧝', '🤖', '👾'].map((emoji) => (
+                <button
+                  key={emoji}
+                  onClick={() => setAvatar(emoji)}
+                  className={cn(
+                    "text-3xl p-2 rounded-lg transition-all",
+                    avatar === emoji ? "bg-primary/20 ring-2 ring-primary" : "hover:bg-muted"
+                  )}
+                >
+                  {emoji}
+                </button>
+              ))}
             </div>
-          ))}
-        </div>
+            <div className="space-y-2">
+              <Label htmlFor="name">Character Name</Label>
+              <Input
+                id="name"
+                value={characterName}
+                onChange={(e) => setCharacterName(e.target.value)}
+                placeholder="Enter your hero name"
+                className="text-center bg-background/50"
+                maxLength={20}
+              />
+            </div>
+          </section>
 
-        {/* Complete Button */}
-        <Button
-          onClick={handleComplete}
-          className="w-full font-pixel text-lg py-6"
-          disabled={loading}
-        >
-          {loading ? 'Creating...' : '⚔️ BEGIN QUEST'}
-        </Button>
+          {/* Stats Section */}
+          <section className="flex flex-col gap-6">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <h2 className="font-pixel text-sm text-primary">
+                YOUR STATS ({stats.length}/6)
+              </h2>
+              <Button onClick={addStat} variant="outline" size="sm" disabled={stats.length >= 6}>
+                + Add Stat
+              </Button>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+              {stats.map((stat, index) => (
+                <div key={index} className="rounded-xl bg-card border border-border p-4 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-2xl">{stat.emoji}</span>
+                    {stats.length > 3 && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => removeStat(index)}
+                        className="text-destructive hover:text-destructive"
+                      >
+                        Remove
+                      </Button>
+                    )}
+                  </div>
+
+                  <div className="grid gap-3">
+                    <div>
+                      <Label className="text-xs">Stat Name</Label>
+                      <Input
+                        value={stat.name}
+                        onChange={(e) => updateStat(index, 'name', e.target.value)}
+                        placeholder="e.g. Strength, Discipline"
+                        className="bg-background/50"
+                        maxLength={20}
+                      />
+                    </div>
+
+                    <div>
+                      <Label className="text-xs">Daily Habit</Label>
+                      <Input
+                        value={stat.habitDescription}
+                        onChange={(e) => updateStat(index, 'habitDescription', e.target.value)}
+                        placeholder="e.g. 30 min workout"
+                        className="bg-background/50"
+                        maxLength={50}
+                      />
+                    </div>
+
+                    <div>
+                      <Label className="text-xs">Emoji</Label>
+                      <div className="flex flex-wrap gap-1 mt-1">
+                        {EMOJI_OPTIONS.map((emoji) => (
+                          <button
+                            key={emoji}
+                            onClick={() => updateStat(index, 'emoji', emoji)}
+                            className={cn(
+                              "text-xl p-1 rounded transition-all",
+                              stat.emoji === emoji ? "bg-primary/20 ring-1 ring-primary" : "hover:bg-muted"
+                            )}
+                          >
+                            {emoji}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <Label className="text-xs">Color</Label>
+                      <div className="flex gap-2 mt-1">
+                        {COLOR_OPTIONS.map((color) => (
+                          <button
+                            key={color.name}
+                            onClick={() => updateStat(index, 'color', color.name)}
+                            className={cn(
+                              "w-8 h-8 rounded-full transition-all",
+                              color.class,
+                              stat.color === color.name ? "ring-2 ring-offset-2 ring-offset-card ring-foreground" : "opacity-60 hover:opacity-100"
+                            )}
+                            title={color.label}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Complete Button */}
+            <Button
+              onClick={handleComplete}
+              className="w-full font-pixel text-lg py-6"
+              disabled={loading}
+            >
+              {loading ? 'Creating...' : '⚔️ BEGIN QUEST'}
+            </Button>
+          </section>
+        </div>
       </div>
     </div>
   );

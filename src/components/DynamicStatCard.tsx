@@ -34,21 +34,29 @@ export function DynamicStatCard({ stat, canComplete, onComplete }: DynamicStatCa
   const colors = colorClasses[stat.color] || colorClasses.primary;
 
   return (
-    <div className={cn(
-      "rounded-lg bg-card border border-border p-4 transition-all duration-300",
-      colors.glow
-    )}>
-      <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center gap-2">
-          <span className="text-2xl">{stat.emoji}</span>
-          <div>
-            <span className={cn("font-semibold block", colors.text)}>{stat.stat_name}</span>
+    <div
+      className={cn(
+        "rounded-lg bg-card border border-border p-4 transition-all duration-300",
+        colors.glow
+      )}
+    >
+      <div className="flex items-start justify-between gap-3 mb-3">
+        <div className="flex items-start gap-2 min-w-0">
+          <span className="text-2xl shrink-0">{stat.emoji}</span>
+          <div className="min-w-0">
+            <span className={cn("font-semibold block leading-tight break-words", colors.text)}>
+              {stat.stat_name}
+            </span>
             {stat.habit_description && (
-              <span className="text-xs text-muted-foreground">{stat.habit_description}</span>
+              <span className="text-xs text-muted-foreground break-words leading-snug pt-2">
+                {stat.habit_description}
+              </span>
             )}
           </div>
         </div>
-        <span className={cn("font-pixel text-lg", colors.text)}>{stat.total_points}</span>
+        <span className={cn("font-pixel text-lg shrink-0 text-right", colors.text)}>
+          {stat.total_points}
+        </span>
       </div>
 
       <button
@@ -56,8 +64,8 @@ export function DynamicStatCard({ stat, canComplete, onComplete }: DynamicStatCa
         disabled={!canComplete}
         className={cn(
           "w-full py-2 px-4 rounded-md border font-medium transition-all duration-200",
-          canComplete 
-            ? cn(colors.button, "cursor-pointer active:scale-95") 
+          canComplete
+            ? cn(colors.button, "cursor-pointer active:scale-95")
             : "bg-muted/30 text-muted-foreground cursor-not-allowed opacity-50"
         )}
       >
