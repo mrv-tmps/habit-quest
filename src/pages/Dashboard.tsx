@@ -8,6 +8,7 @@ import { GuestBanner } from '@/components/GuestBanner';
 import { MessageToast } from '@/components/MessageToast';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import logo from '@/assets/habit-quest-logo.png';
 
 const Dashboard = () => {
   const { user, isGuest, signOut } = useAuth();
@@ -84,7 +85,16 @@ const Dashboard = () => {
       <div className="relative max-w-md mx-auto px-4 py-8 space-y-6">
         {/* Header */}
         <header className="flex items-center justify-between">
-          <h1 className="font-pixel text-lg text-primary text-glow">HABIT QUEST</h1>
+          <div className="flex items-center gap-2">
+            <img
+              src={logo}
+              alt="Habit Quest logo"
+              className="h-8 w-auto drop-shadow"
+            />
+            <h1 className="font-pixel text-lg text-primary text-glow">
+              HABIT QUEST
+            </h1>
+          </div>
           <div className="flex gap-2">
             <Button variant="ghost" size="sm" onClick={() => navigate('/history')}>
               📊

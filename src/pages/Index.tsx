@@ -4,6 +4,7 @@ import { StatCard } from '@/components/StatCard';
 import { GitHubSetup } from '@/components/GitHubSetup';
 import { MessageToast } from '@/components/MessageToast';
 import { ResetButton } from '@/components/ResetButton';
+import logo from '@/assets/habit-quest-logo.png';
 
 const Index = () => {
   const {
@@ -27,13 +28,22 @@ const Index = () => {
 
       <div className="relative max-w-md mx-auto px-4 py-8 space-y-6">
         {/* Header */}
-        <header className="text-center space-y-2">
-          <h1 className="font-pixel text-lg text-primary text-glow">
-            HABIT QUEST
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            Level up your life, one habit at a time
-          </p>
+        <header className="text-center space-y-3">
+          <div className="flex justify-center">
+            <img
+              src={logo}
+              alt="Habit Quest logo"
+              className="h-16 w-auto mx-auto drop-shadow"
+            />
+          </div>
+          <div className="space-y-1">
+            <h1 className="font-pixel text-lg text-primary text-glow">
+              HABIT QUEST
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              Level up your life, one habit at a time
+            </p>
+          </div>
         </header>
 
         {/* Character Card */}

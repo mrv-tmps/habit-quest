@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
+import logo from '@/assets/habit-quest-logo.png';
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -62,7 +63,13 @@ const Auth = () => {
       <div className="relative w-full max-w-sm space-y-8">
         {/* Logo/Title */}
         <div className="text-center space-y-4">
-          <div className="text-6xl animate-pulse-glow">🎮</div>
+          <div className="flex justify-center">
+            <img
+              src={logo}
+              alt="Habit Quest logo"
+              className="h-20 w-auto drop-shadow-lg"
+            />
+          </div>
           <h1 className="font-pixel text-2xl text-primary text-glow">
             HABIT QUEST
           </h1>
