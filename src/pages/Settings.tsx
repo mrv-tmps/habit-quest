@@ -8,6 +8,14 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
+import { Textarea } from '@/components/ui/textarea';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -21,6 +29,12 @@ import {
 } from "@/components/ui/alert-dialog";
 
 const AVATAR_OPTIONS = ['🧑‍🚀', '🦸', '🧙', '🥷', '👨‍💻', '🧝', '🤖', '👾', '🦊', '🐉'];
+const FEEDBACK_CATEGORIES = [
+  { value: 'feature', label: 'New feature / improvement' },
+  { value: 'bug', label: 'Bug or issue' },
+  { value: 'content', label: 'Content idea' },
+  { value: 'other', label: 'Something else' },
+];
 
 const Settings = () => {
   const navigate = useNavigate();
@@ -30,6 +44,10 @@ const Settings = () => {
   const [characterName, setCharacterName] = useState(profile?.character_name || 'Hero');
   const [avatar, setAvatar] = useState(profile?.avatar || '🧑‍🚀');
   const [saving, setSaving] = useState(false);
+  const [feedbackEmail, setFeedbackEmail] = useState(user?.email || '');
+  const [feedbackCategory, setFeedbackCategory] = useState('feature');
+  const [feedbackMessage, setFeedbackMessage] = useState('');
+  const [feedbackSubmitting, setFeedbackSubmitting] = useState(false);
 
   useEffect(() => {
     if (profile) {
@@ -37,6 +55,10 @@ const Settings = () => {
       setAvatar(profile.avatar || '🧑‍🚀');
     }
   }, [profile]);
+
+  useEffect(() => {
+    setFeedbackEmail(user?.email || '');
+  }, [user]);
 
   const handleSave = async () => {
     setSaving(true);
@@ -65,6 +87,33 @@ const Settings = () => {
       toast.error(error.message || 'Failed to save');
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleFeedbackSubmit = async () => {
+    if (!feedbackMessage.trim()) {
+      toast.error('Tell us a little more about the improvement you need.');
+      return;
+    }
+
+    setFeedbackSubmitting(true);
+    try {
+      const payload = {
+        category: feedbackCategory,
+        message: feedbackMessage.trim(),
+        email: feedbackEmail?.trim() || user?.email || null,
+        user_id: user?.id || null,
+      };
+
+      const { error } = await supabase.from('feedback_requests').insert(payload);
+      if (error) throw error;
+
+      toast.success('Thanks for the feedback! We read every submission.');
+      setFeedbackMessage('');
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to send feedback');
+    } finally {
+      setFeedbackSubmitting(false);
     }
   };
 
@@ -144,6 +193,74 @@ const Settings = () => {
 
           <Button onClick={handleSave} disabled={saving} className="w-full">
             {saving ? 'Saving...' : 'Save Changes'}
+          </Button>
+        </div>
+
+        {/* Feedback */}
+        <div className="rounded-xl bg-card border border-border/80 p-6 space-y-4">
+          <div>
+            <h2 className="font-semibold">Feedback & Ideas</h2>
+            <p className="text-sm text-muted-foreground">
+              Request features, report issues, or tell us what would make Habit Hero better.
+            </p>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="feedback-category">Category</Label>
+            <Select value={feedbackCategory} onValueChange={setFeedbackCategory}>
+              <SelectTrigger id="feedback-category" className="bg-background/50">
+                <SelectValue placeholder="Select a category" />
+              </SelectTrigger>
+              <SelectContent>
+                {FEEDBACK_CATEGORIES.map((category) => (
+                  <SelectItem key={category.value} value={category.value}>
+                    {category.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="feedback-email">Contact Email (optional)</Label>
+            <Input
+              id="feedback-email"
+              type="email"
+              value={feedbackEmail}
+              onChange={(e) => setFeedbackEmail(e.target.value)}
+              placeholder="you@email.com"
+              className="bg-background/50"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="feedback-message">What should we build next?</Label>
+            <Textarea
+              id="feedback-message"
+              value={feedbackMessage}
+              onChange={(e) => setFeedbackMessage(e.target.value)}
+              placeholder="Describe the update, improvement, or issue..."
+              rows={4}
+              className="bg-background/50"
+              maxLength={500}
+            />
+            <p className="text-xs text-muted-foreground">
+              {feedbackMessage.length}/500 characters
+            </p>
+          </div>
+
+          {isGuest && (
+            <p className="text-xs text-muted-foreground">
+              Guest submissions are stored without an account. Leave your email so we can reply.
+            </p>
+          )}
+
+          <Button
+            onClick={handleFeedbackSubmit}
+            disabled={feedbackSubmitting}
+            className="w-full"
+          >
+            {feedbackSubmitting ? 'Sending...' : 'Send Feedback'}
           </Button>
         </div>
 

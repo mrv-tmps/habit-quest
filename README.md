@@ -1,73 +1,91 @@
-# Welcome to your Lovable project
+# Habit Quest
 
-## Project info
+Habit Quest turns your daily routines into a gamified quest log. Create a pixel-art hero, complete daily quests tied to real habits, gain XP, and level up. Built for quick mobile check-ins with optional guest mode for trying the experience before creating an account.
 
-**URL**: https://lovable.dev/projects/96f2c30a-dee2-4200-a860-c3f93626cdf0
+## Highlights
+- **Quest-based dashboard** – Complete curated stats like Focus, Wellness, and Growth with cooldown logic so habits can only be logged once per day.
+- **Leveling + XP feedback** – Instant animations and toasts celebrate streaks, level-ups, and missed cooldowns.
+- **Guided onboarding** – Choose an avatar, name, and starter quests through a multi-step flow that stores progress in Supabase.
+- **Guest mode** – Try the experience instantly; upgrade to a full account anytime without losing context.
+- **Responsive UI** – Tailwind + shadcn components provide a polished, mobile-first interface that still looks great on larger screens.
+- **Supabase backend** – Auth, profile data, and habit logs are persisted via Supabase (locally or in the cloud).
 
-## How can I edit this code?
+## Tech Stack
+- React 18 + Vite + TypeScript
+- Tailwind CSS & shadcn/ui component primitives
+- Supabase (Postgres, Auth, Row Level Security)
+- TanStack Query, React Hook Form, Zod, Sonner toasts
 
-There are several ways of editing your application.
+## Prerequisites
+- Node.js 18+ and npm
+- Supabase CLI (required for local database/auth) – [installation guide](https://supabase.com/docs/guides/cli)
 
-**Use Lovable**
+## Local Setup
+```bash
+git clone <repo-url>
+cd habit-quest
+npm install
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/96f2c30a-dee2-4200-a860-c3f93626cdf0) and start prompting.
+# optional: start local Supabase stack
+supabase start
 
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+# copy env vars
+cp .env.example .env.local
 ```
 
-**Edit a file directly in GitHub**
+### Environment variables
+Define the following in `.env.local` (Vite will read variables prefixed with `VITE_`):
+```
+VITE_SUPABASE_URL=<your-supabase-url>
+VITE_SUPABASE_PUBLISHABLE_KEY=<your-supabase-anon-key>
+```
+When running `supabase start`, the CLI prints local values you can drop in here.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Run the app
+```bash
+npm run dev
+```
+The dev server defaults to `http://localhost:5173`. Supabase CLI exposes the studio at `http://localhost:54323` by default.
 
-**Use GitHub Codespaces**
+## Project Structure
+- `src/pages` – Auth, Onboarding, Dashboard, History, Settings, and supporting routes
+- `src/components` – UI library wrappers, Stat cards, Character card, banners, and toasts
+- `src/hooks` – Habit tracker logic, Supabase-backed user data, responsive helpers
+- `src/contexts/AuthContext.tsx` – Supabase auth session management + guest support
+- `supabase/` – CLI configuration and SQL migrations that provision the schema used by Habit Quest
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## Supabase Migrations
+To capture schema changes:
+```bash
+# after editing the local DB (via SQL or studio)
+supabase db diff --file migrations/<timestamp>_<name>.sql
+```
+Apply migrations in another environment with:
+```bash
+supabase db push
+```
 
-## What technologies are used for this project?
+### Feedback requests table
+- The `supabase/migrations/20251129121500_add_feedback_requests.sql` migration provisions a `feedback_requests` table that stores feature ideas, bug reports, and other suggestions directly from the in-app form.
+- Make sure this migration has been pushed (`supabase db push`) before deploying environments that should capture user feedback.
+- Feedback entries are inserted from the Settings screen; unauthenticated submissions are allowed but you can tighten the policy if you only want authenticated players to create rows.
 
-This project is built with:
+## Useful Scripts
+| Command | Description |
+| --- | --- |
+| `npm run dev` | Run Vite dev server |
+| `npm run build` | Production build |
+| `npm run preview` | Preview the production build |
+| `npm run lint` | ESLint across the repo |
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## Deployment Tips
+- Configure the Supabase project credentials as environment variables wherever you host (Vercel/Netlify/etc).
+- For best Lighthouse scores, deploy the optimized build (`npm run build`) and serve the `dist/` directory.
+- If you change the Supabase schema, run migrations before deploying the new frontend so the API stays in sync.
 
-## How can I deploy this project?
+## Roadmap Ideas
+- Streak badges + reminders
+- Social leaderboards for friends or teams
+- Advanced analytics on habit history
 
-Simply open [Lovable](https://lovable.dev/projects/96f2c30a-dee2-4200-a860-c3f93626cdf0) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Have feedback or ideas? Open an issue or drop a PR—adventure is better together. 🗡️
